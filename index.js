@@ -61,7 +61,6 @@ client.Scommands = new Collection();
       console.error(error);
     }
   });
-});
 
 client.on("ready" , () => {
   console.log(`Logged in as ${client.user.tag}!`)
