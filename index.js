@@ -38,9 +38,6 @@ const commands = [];
 const CMD = [];
 client.Scommands = new Collection();
 
-client.on('ready', () => {
-  const clientId = client.user.id;
-
   client.on('interactionCreate', (interaction) => {
     if (!interaction.isCommand()) return;
     const command = client.Scommands.get(interaction.commandName);
