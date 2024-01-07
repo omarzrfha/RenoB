@@ -34,15 +34,7 @@ client.slashCommands = new Collection();
 const prefix = '.';
 client.setMaxListeners(0);
 const commands = [];
-const eventFiles = fs.readdirSync('./events').filter((file) => file.endsWith('.js'));
-for (const file of eventFiles) {
-  const event = require(`./events/${file}`);
-  if (event.once) {
-    client.once(event.name, (...args) => event.execute(...args));
-  } else {
-    client.on(event.name, (...args) => event.execute(...args));
-  }
-}
+
 const CMD = [];
 client.Scommands = new Collection();
 
@@ -74,7 +66,10 @@ client.on('ready', () => {
   });
 });
 
+client.on("ready" , () => {
+  console.log(`Logged in as ${client.user.tag}!`)
 
+});
 
 
 
