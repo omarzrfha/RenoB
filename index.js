@@ -73,7 +73,7 @@ const categoryIDs = ['995631147532955708', '995632149464100944', '99563183192592
 const reallow = '957442639018491925';
 
 client.on('messageCreate', async (message) => {
-  if (categoryIDs.includes(message.channel.parent.id) && message.member.roles.cache.has(reallow)) {
+  if (message.channel.parent && categoryIDs.includes(message.channel.parent.id) && message.member.roles.cache.has(reallow)) {
     if (message.content.startsWith('.re') && message.content.length > 4) {
       const newName = message.content.slice(4);
       message.channel.setName(newName);
