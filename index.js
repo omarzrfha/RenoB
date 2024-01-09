@@ -94,8 +94,8 @@ client.on('messageCreate', async (message) => {
   const content = message.content.toLowerCase();
   const isTicketManager = message.member.roles.cache.has(ticketManagerRoleId);
   const allowedCategories = ['995631147532955708', '995632149464100944', '995631831925923961'];
-  const isAllowedCategory = allowedCategories.includes(message.channel.parent.id);
-
+  const isAllowedCategory = message.channel.parent && allowedCategories.includes(message.channel.parent.id);
+    
   if (isTicketManager && isAllowedCategory && content === 'غلق') {
     const embedMessage = new MessageEmbed()
       .setTitle('تنبيه ⚠️')
