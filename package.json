@@ -42,4 +42,7 @@
     "unsplash-source-node": "^1.2.0",
     "website-scraper": "^5.2.0"
   }
+  "engines": {
+  "node": ">=16.7.0"
+  }
 }
