@@ -477,6 +477,136 @@ client.on('messageCreate', (message) => {
 
 
 
+client.on('messageCreate', (message) => {
+  if (message.content.toLowerCase() === 'تصفير' && message.member.roles.cache.has('957442639001710619')) {
+    const row = new MessageActionRow()
+      .addComponents(
+        new MessageButton()
+          .setCustomId('clearRolesButton')
+          .setLabel('وزارة الداخلية')
+          .setStyle('PRIMARY'),
+        new MessageButton()
+          .setCustomId('defenseRolesButton')
+          .setLabel('وزارة الدفاع')
+          .setStyle('PRIMARY'),
+        new MessageButton()
+          .setCustomId('healthRolesButton')
+          .setLabel('وزارة الصحة')
+          .setStyle('PRIMARY'),
+        new MessageButton()
+          .setCustomId('justiceRolesButton')
+          .setLabel('وزارة العدل')
+          .setStyle('PRIMARY'),
+        new MessageButton()
+          .setCustomId('micRolesButton')
+          .setLabel('الميكانيك')
+          .setStyle('PRIMARY'),
+      );
+
+    message.reply({
+      content: 'اختر الوزارة المراد تصفيرها',
+      components: [row],
+    });
+  }
+});
+
+client.on('interactionCreate', async (interaction) => {
+if (!interaction.isButton()) return;
+
+const member = interaction.member;
+if (!member.roles.cache.has('957442639001710619')) {
+  interaction.reply(`<@${member.user.id}>، ليس لديك الصلاحية اللازمة لاتخاذ هذا الإجراء.`);
+  return;
+}
+
+  const targetRoles = {
+    clearRolesButton: [
+      '957442638947172354',
+      '988803135554322483',
+      '1048543455170809897',
+      '1039147799083765890',
+      '957442638947172352',
+      '957442638930411570',
+      '957442638930411569',
+      '957442638930411568',
+      '957442638930411567',
+      '957442638930411566',
+      '957442638930411562',
+      '957442638930411561',
+      '957442638909411376',
+      '957442638909411374',
+      '957442638909411373',
+      '957442638909411371',
+      '957442638909411369',
+    ],
+    defenseRolesButton: [
+      '957442638825553952',
+      '957442638825553951',
+      '957442638825553950',
+      '996057935132250153',
+      '996057925351133236',
+      '1028727891913093120',
+      '1028729078804656168',
+      '1025381448028520570',
+      '1022233839180988446',
+      '957442638796161033',
+      '957442638796161032',
+      '957442638796161031',
+      '957442638796161030',
+      '957442638796161029',
+    ],
+    healthRolesButton: [
+      '957442638796161028',
+      '957442638796161027',
+      '957442638796161026',
+      '957442638796161025',
+      '957442638775210003',
+      '957442638775209998',
+      '957442638775210002',
+      '957442638775210000',
+      '957442638775209997',
+      '957442638775209996',
+      '957442638775209995',
+      '957442638775209994',
+      '957442638750031890',
+    ],
+    justiceRolesButton: [
+      '1016614759191298089',
+      '1016614763939254292',
+      '1017681878997811200',
+      '1017681874807697459',
+      '1016615149420949504',
+      '1081831937049645076',
+      '1081217767572766810',
+      '1060183175990607904',
+      '1044915088261382194',
+      '1016615153602666586',
+    ],
+    micRolesButton: [
+      '957442638750031889',
+      '957442638750031888',
+      '957442638750031887',
+      '957442638750031886',
+      '957442638750031885',
+      '957442638750031884',
+    ],
+  };
+
+  const buttonId = interaction.customId;
+  const rolesToRemove = targetRoles[buttonId];
+
+  if (rolesToRemove) {
+    try {
+      await interaction.member.roles.remove(rolesToRemove);
+      interaction.reply(`تمت عملية سحب الرتب بنجاح.`);
+    } catch (error) {
+      console.error(`حدث خطأ أثناء سحب الرتب: ${error}`);
+      interaction.reply('حدث خطأ أثناء سحب الرتب.');
+    }
+  }
+});
+
+
 
 
 
