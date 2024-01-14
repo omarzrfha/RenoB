@@ -475,8 +475,6 @@ client.on('messageCreate', (message) => {
 
 
 
-
-
 client.on('messageCreate', (message) => {
   if (message.content.toLowerCase() === 'تصفير' && message.member.roles.cache.has('957442639001710619')) {
     const row = new MessageActionRow()
@@ -511,13 +509,13 @@ client.on('messageCreate', (message) => {
 });
 
 client.on('interactionCreate', async (interaction) => {
-if (!interaction.isButton()) return;
+  if (!interaction.isButton()) return;
 
-const member = interaction.member;
-if (!member.roles.cache.has('957442639001710619')) {
-  interaction.reply(`<@${member.user.id}>، ليس لديك الصلاحية اللازمة لاتخاذ هذا الإجراء.`);
-  return;
-}
+  const member = interaction.member;
+  if (!member.roles.cache.has('957442639001710619')) {
+    interaction.reply(`<@${member.user.id}>، ليس لديك الصلاحية اللازمة لاتخاذ هذا الإجراء.`);
+    return;
+  }
 
   const targetRoles = {
     clearRolesButton: [
@@ -597,8 +595,17 @@ if (!member.roles.cache.has('957442639001710619')) {
 
   if (rolesToRemove) {
     try {
-      await interaction.member.roles.remove(rolesToRemove);
-      interaction.reply(`تمت عملية سحب الرتب بنجاح.`);
+      // الحصول على جميع أعضاء الوزارة المختارة
+      const members = interaction.guild.members.cache.filter((guildMember) =>
+        guildMember.roles.cache.some((role) => rolesToRemove.includes(role.id))
+      );
+
+      // سحب الرتب من جميع الأعضاء
+      members.forEach(async (guildMember) => {
+        await guildMember.roles.remove(rolesToRemove);
+      });
+
+      interaction.reply(`تمت عملية التصفير بنجاح`);
     } catch (error) {
       console.error(`حدث خطأ أثناء سحب الرتب: ${error}`);
       interaction.reply('حدث خطأ أثناء سحب الرتب.');
