@@ -513,8 +513,6 @@ client.on('interactionCreate', async (interaction) => {
 
   const member = interaction.member;
   if (!member.roles.cache.has('957442639001710619')) {
-    interaction.reply(`<@${member.user.id}>، ليس لديك الصلاحية اللازمة لاتخاذ هذا الإجراء.`);
-    return;
   }
 
   const targetRoles = {
