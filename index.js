@@ -614,6 +614,74 @@ client.on('interactionCreate', async (interaction) => {
 
 
 
+const clientId = '520171813599182849';
+const guildId = '957442638309638215';
+
+const targetChannelId = '1196125204125069372'; // معرف القناة المستهدفة
+
+
+// تخزين الوقت عند الضغط على زر تسجيل الدخول
+const loginTimes = new Map();
+
+client.once('ready', async () => {
+  const targetChannel = client.channels.cache.get(targetChannelId);
+
+  if (targetChannel && targetChannel.isText()) {
+    const existingMessages = await targetChannel.messages.fetch();
+    const existingMessage = existingMessages.first();
+
+    if (existingMessage) {
+      await existingMessage.edit({
+        content: 'من الواجب على الجميع التسجيل أثناء تواجدهم بالمراقبة و خروجهم بعد الانتهاء من المراقبة',
+        components: [
+          new MessageActionRow().addComponents(
+            new MessageButton().setCustomId('login_button').setLabel('تسجيل دخول').setStyle('SUCCESS'),
+            new MessageButton().setCustomId('logout_button').setLabel('تسجيل خروج').setStyle('DANGER')
+          ),
+        ],
+      });
+    } else {
+      const newMessage = await targetChannel.send({
+        content: 'اختر نوع التسجيل:',
+        components: [
+          new MessageActionRow().addComponents(
+            new MessageButton().setCustomId('login_button').setLabel('تسجيل دخول').setStyle('SUCCESS'),
+            new MessageButton().setCustomId('logout_button').setLabel('تسجيل خروج').setStyle('DANGER')
+          ),
+        ],
+      });
+    }
+  } else {
+    console.error('Invalid or non-text channel specified.');
+  }
+});
+
+client.on('interactionCreate', async (interaction) => {
+  if (!interaction.isButton()) return;
+
+  const member = interaction.member;
+  const memberId = member.id;
+
+  if (interaction.customId === 'login_button') {
+    const loginTime = Date.now();
+    loginTimes.set(memberId, loginTime);
+    interaction.reply(`قام الشخص <@${memberId}> بتسجيل الدخول.`);
+  } else if (interaction.customId === 'logout_button') {
+    const loginTime = loginTimes.get(memberId);
+
+    if (loginTime) {
+      const logoutTime = Date.now();
+      const timeDifference = Math.floor((logoutTime - loginTime) / (1000 * 60)); // التفاوت بالدقائق
+
+      interaction.reply(`قام الشخص <@${memberId}> بتسجيل الخروج.\nالوقت المقضي في الداخل: ${timeDifference} دقيقة.`);
+      loginTimes.delete(memberId);
+    } else {
+      interaction.reply('يجب عليك تسجيل الدخول أولاً قبل تسجيل الخروج.');
+    }
+  }
+});
+
+
 
 
 
