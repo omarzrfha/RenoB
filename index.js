@@ -682,7 +682,47 @@ client.on('interactionCreate', async (interaction) => {
 });
 
 
+const factions = ["993806845187727381", "957442638947172360", "1016614759191298089", "957442638825553952", "957442638796161028", "957442638750031889"];
+const factionMember = "994009967600336976";
 
+client.on('guildMemberUpdate', (oldMember, newMember) => {
+    const oldRoles = oldMember.roles.cache.map(role => role.id);
+    const newRoles = newMember.roles.cache.map(role => role.id);
+
+    // Check if the member gained any of the target roles
+    const gainedRoles = factions.filter(roleId => !oldRoles.includes(roleId) && newRoles.includes(roleId));
+
+    // Check if the member lost any of the target roles
+    const lostRoles = factions.filter(roleId => oldRoles.includes(roleId) && !newRoles.includes(roleId));
+
+    // Assign or remove the faction member role accordingly
+    if (gainedRoles.length > 0) {
+        newMember.roles.add(factionMember).catch(console.error);
+    } else if (lostRoles.length > 0) {
+        newMember.roles.remove(factionMember).catch(console.error);
+    }
+});
+
+const gangs = ["957442638750031883", "957442638712307767", "957442638729068557", "957442638691307577", "957442638649384973", "1011242732116774913"];
+const gangMember = "994009963695444099";
+
+client.on('guildMemberUpdate', (oldMember, newMember) => {
+    const oldRoles = oldMember.roles.cache.map(role => role.id);
+    const newRoles = newMember.roles.cache.map(role => role.id);
+
+    // Check if the member gained any of the target roles
+    const gainedRoles = gangs.filter(roleId => !oldRoles.includes(roleId) && newRoles.includes(roleId));
+
+    // Check if the member lost any of the target roles
+    const lostRoles = gangs.filter(roleId => oldRoles.includes(roleId) && !newRoles.includes(roleId));
+
+    // Assign or remove the gang member role accordingly
+    if (gainedRoles.length > 0) {
+        newMember.roles.add(gangMember).catch(console.error);
+    } else if (lostRoles.length > 0) {
+        newMember.roles.remove(gangMember).catch(console.error);
+    }
+});
 
 
 client.on('messageCreate', (message) => {
