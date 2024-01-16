@@ -725,6 +725,71 @@ client.on('guildMemberUpdate', (oldMember, newMember) => {
 });
 
 
+
+const alchatat = '957442642059337763';
+const factiongang = ['994009963695444099', '994009967600336976'];
+const timeoutRoleId = '1001811653941280779'; // قم بتغييره إلى ID الرتبة المراد إعطائها
+
+client.on('messageCreate', async (message) => {
+  const mentionedRoles = message.mentions.roles;
+
+  // التحقق من أن الرسالة تأتي من قناة ضمن الفئة المعينة وتحتوي على منشن للرتب المستهدفة
+  if (
+    message.channel.parentId === alchatat &&
+    mentionedRoles.some((role) => factiongang.includes(role.id))
+  ) {
+    // حذف رسالة الشخص
+    await message.delete();
+
+    // إعطاء الرتبة المحددة للمستخدم
+    const member = message.guild.members.cache.get(message.author.id);
+    await member.roles.add(timeoutRoleId);
+
+    // إرسال رسالة توضح السبب للمستخدم
+    const replyMessage = `رسالتك انحذفت وجاك ميوت ، ممنوع منشنة الفاكشنات والوزارات هنا`;
+    const sentMessage = await message.author.send(replyMessage);
+
+    // حذف رسالة التوضيح بعد 5 ثواني
+    sentMessage.delete({ timeout: 5000 });
+  }
+});
+
+
+
+const cooldownTime = 5 * 60 * 1000; // 5 دقائق في مللي ثانية
+const mentionLimit = 2; // عدد المنشن المسموح به في الفترة الزمنية
+
+const mentionsMap = new Map();
+
+client.on('messageCreate', (message) => {
+  const mentionedMember = message.mentions.members.first();
+
+  // التحقق من أن الرسالة تأتي من قناة ضمن الفئات المعينة
+  const allowedChannelCategories = ['995631147532955708', '995632149464100944', '995631831925923961'];
+  if (allowedChannelCategories.includes(message.channel.parentId) && mentionedMember && !mentionedMember.user.bot) {
+    if (mentionedMember && mentionedMember.roles.cache.has('957442639018491925')) {
+      const memberId = mentionedMember.id;
+
+      if (!mentionsMap.has(memberId) || Date.now() - mentionsMap.get(memberId).timestamp >= cooldownTime) {
+        mentionsMap.set(memberId, {
+          count: 1,
+          timestamp: Date.now(),
+        });
+      } else {
+        const mentionData = mentionsMap.get(memberId);
+        mentionData.count++;
+
+        if (mentionData.count >= mentionLimit) {
+          message.reply(`يرجى الالتزام بأنظمة التكتات و عدم منشنة الادارة مرتين خلال اقل من خمس دقائق `);
+        }
+      }
+    }
+  }
+});
+
+
+
+
 client.on('messageCreate', (message) => {
   if (message.content.startsWith(prefix + 'uptime')) {
     let days = Math.floor(message.client.uptime / 86400000);
