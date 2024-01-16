@@ -615,39 +615,6 @@ client.on('messageCreate', async (message) => {
 
 
 
-const cooldownTime = 5 * 60 * 1000; // 5 دقائق في مللي ثانية
-const mentionLimit = 2; // عدد المنشن المسموح به في الفترة الزمنية
-
-const mentionsMap = new Map();
-
-client.on('messageCreate', (message) => {
-  const mentionedMember = message.mentions.members.first();
-
-  // التحقق من أن الرسالة تأتي من قناة ضمن الفئات المعينة
-  const allowedChannelCategories = ['995631147532955708', '995632149464100944', '995631831925923961'];
-  if (allowedChannelCategories.includes(message.channel.parentId) && mentionedMember && !mentionedMember.user.bot) {
-    if (mentionedMember && mentionedMember.roles.cache.has('957442639018491925')) {
-      const memberId = mentionedMember.id;
-
-      if (!mentionsMap.has(memberId) || Date.now() - mentionsMap.get(memberId).timestamp >= cooldownTime) {
-        mentionsMap.set(memberId, {
-          count: 1,
-          timestamp: Date.now(),
-        });
-      } else {
-        const mentionData = mentionsMap.get(memberId);
-        mentionData.count++;
-
-        if (mentionData.count >= mentionLimit) {
-          message.reply(`يرجى الالتزام بأنظمة التكتات و عدم منشنة الادارة مرتين خلال اقل من خمس دقائق `);
-        }
-      }
-    }
-  }
-});
-
-
-
 
 client.on('messageCreate', (message) => {
   if (message.content.startsWith(prefix + 'uptime')) {
