@@ -551,6 +551,34 @@ client.on('messageCreate', async (message) => {
 
 
 
+const roleIdArray = ['957442638607446081', '994009967600336976', '957442638607446085', '994009963695444099'];
+const notificationChannelId = '957442640520036359';
+const cooldownTime = 30 * 60 * 1000; // 30 دقيقة في مللي ثانية
+
+const usersOnCooldown = new Set();
+
+client.on('guildMemberRemove', (member) => {
+  if (roleIdArray.some(roleId => member.roles.cache.has(roleId))) {
+    const userId = member.id;
+
+    if (!usersOnCooldown.has(userId)) {
+      usersOnCooldown.add(userId);
+
+      setTimeout(() => {
+        usersOnCooldown.delete(userId);
+      }, cooldownTime);
+
+      const notificationChannel = member.guild.channels.cache.get(notificationChannelId);
+      if (notificationChannel) {
+        notificationChannel.send(`🚨 **تنبيه!** <@${member.user.id}> قام بالخروج والدخول مرة أخرى`);
+      }
+    }
+  }
+});
+
+
+
+
 
 client.on('messageCreate', (message) => {
   if (message.content.startsWith(prefix + 'uptime')) {
