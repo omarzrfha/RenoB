@@ -28,6 +28,7 @@ const client = new Client({
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const fs = require('fs');
+const os = require('os');
 module.exports = client;
 client.commands = new Collection();
 client.slashCommands = new Collection();
