@@ -579,15 +579,60 @@ client.on('guildMemberRemove', (member) => {
 
 
 
-
 client.on('messageCreate', (message) => {
-  if (message.content.startsWith(prefix + 'uptime')) {
-    let days = Math.floor(message.client.uptime / 86400000);
-    let hours = Math.floor((message.client.uptime / 3600000) % 24);
-    let minutes = Math.floor((message.client.uptime / 60000) % 60);
-    let seconds = Math.floor((message.client.uptime / 1000) % 60);
-    message.reply(`**${seconds}s ${minutes}m ${hours}h ${days}d**`);
+  if (message.content.toLowerCase() === '.uptime') {
+    const response = getInfo(message);
+    message.channel.send(response);
   }
 });
+
+function getInfo(message) {
+  const usedMemory = formatBytes(process.memoryUsage().heapUsed);
+  const totalMemory = formatBytes(os.totalmem());
+  const freeMemory = formatBytes(os.freemem());
+  const totalRam = formatBytes(os.totalmem());
+  const usedRam = formatBytes(os.totalmem() - os.freemem());
+
+  const cpuUsage = getCpuUsage();
+
+  const uptime = formatUptime(process.uptime());
+
+  return `**Bot Information:**
+- Response Time: ${Date.now() - message.createdTimestamp}ms
+- Used Memory: ${usedMemory}
+- Total Memory: ${totalMemory}
+- Free Memory: ${freeMemory}
+- Total RAM: ${totalRam}
+- Used RAM: ${usedRam}
+- CPU Usage: ${cpuUsage}%
+- Uptime: ${uptime}`;
+}
+
+function getCpuUsage() {
+  const cpus = os.cpus();
+  const totalCpu = cpus.reduce((acc, cpu) => acc + (cpu.times.user + cpu.times.nice + cpu.times.sys + cpu.times.idle + cpu.times.irq), 0);
+  const idleCpu = cpus.reduce((acc, cpu) => acc + cpu.times.idle, 0);
+
+  const cpuUsagePercent = ((totalCpu - idleCpu) / totalCpu) * 100;
+
+  return cpuUsagePercent.toFixed(2);
+}
+
+function formatBytes(bytes) {
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  if (bytes === 0) return '0 Byte';
+  const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+  return Math.round((bytes / Math.pow(1024, i))) + ' ' + sizes[i];
+}
+
+function formatUptime(uptime) {
+  const seconds = Math.floor(uptime % 60);
+  const minutes = Math.floor((uptime / 60) % 60);
+  const hours = Math.floor((uptime / 3600) % 24);
+  const days = Math.floor(uptime / 86400);
+
+  return `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+}
+
 
 client.login(process.env.token);
