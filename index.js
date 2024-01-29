@@ -636,4 +636,78 @@ function formatUptime(uptime) {
 }
 
 
+const { createCanvas, loadImage } = require('canvas');
+
+const canvasWidth = 600;
+const canvasHeight = 300;
+const font = '40px Arial';
+const postImageFilePath = './post.png'; // تعيين مسار الصورة
+
+client.on('messageCreate', async (message) => {
+  if (message.content.toLowerCase().startsWith('.post')) {
+    const userName = message.author.username;
+    const content = message.content.substring('.post'.length).trim(); // استخراج الرسالة من الأمر
+
+    const image = await createImageWithText(userName, content);
+
+    // إرسال الصورة في روم معين (قم بتعديل الرقم)
+    const twitterChannelId = '1201292803850895450';
+    const twitterChannel = message.guild.channels.cache.get(twitterChannelId);
+
+    if (twitterChannel) {
+      await twitterChannel.send({ files: [image] });
+      await message.delete(); // حذف الرسالة بعد إرسال الصورة
+    } else {
+      message.reply('Twitter channel not found.');
+      await message.delete();
+    }
+  }
+});
+
+async function createImageWithText(userName, content) {
+  const canvas = createCanvas(canvasWidth, canvasHeight);
+  const ctx = canvas.getContext('2d');
+
+  // رسم الصورة
+  const image = await loadImage(postImageFilePath);
+  ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
+
+  // إضافة اسم الشخص
+  ctx.font = '20px Arial';
+  ctx.fillStyle = 'white';
+  ctx.textAlign = 'center';
+  ctx.fillText(userName, canvasWidth - 100, 95);  
+
+  // إضافة محتوى الرسالة بلون أسود
+  ctx.font = '23px Arial';
+  ctx.fillStyle = 'black'; // تحديد لون النص كلون أسود
+  ctx.textAlign = 'center';
+  wrapText(ctx, content, canvasWidth / 2, canvasHeight / 2, canvasWidth - 40, 18);
+
+  // تحويل الصورة إلى Buffer
+  const buffer = canvas.toBuffer('image/png');
+
+  return buffer;
+}
+
+// دالة للكتابة على الكانفاس بشكل ملتف
+function wrapText(context, text, x, y, maxWidth, lineHeight) {
+  const words = text.split(' ');
+  let line = '';
+  for (let n = 0; n < words.length; n++) {
+    const testLine = line + words[n] + ' ';
+    const metrics = context.measureText(testLine);
+    const testWidth = metrics.width;
+    if (testWidth > maxWidth && n > 0) {
+      context.fillText(line, x, y);
+      line = words[n] + ' ';
+      y += lineHeight;
+    } else {
+      line = testLine;
+    }
+  }
+  context.fillText(line, x, y + 20);
+}
+
+
 client.login(process.env.token);
