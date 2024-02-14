@@ -571,7 +571,7 @@ client.on('guildMemberRemove', (member) => {
 
       const notificationChannel = member.guild.channels.cache.get(notificationChannelId);
       if (notificationChannel) {
-        notificationChannel.send(`🚨 **تنبيه!** <@${member.user.id}> قام بالخروج والدخول مرة أخرى`);
+        notificationChannel.send(`🚨 **تنبيه!** ${member.user.id} قام بالخروج والدخول مرة أخرى`);
       }
     }
   }
