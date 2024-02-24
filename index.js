@@ -110,60 +110,6 @@ client.on('messageCreate', async (message) => {
 
 
 
-
-
-
-const ticketManagerRoleId = '957442639018491925';
-const logChannelId = '1048615495147999264';
-
-client.on('messageCreate', async (message) => {
-  if (message.author.bot) return;
-
-  if (message.content.startsWith('.gban') && message.member.roles.cache.has(ticketManagerRoleId)) {
-    // Extracting the messages after the command
-    const [, message1, message2, message3] = message.content.split(' ');
-
-    // Creating the formatted message with Embed
-    const formattedMessage = new MessageEmbed()
-      .setTitle('قائمة الحظر')
-      .setDescription(`
-        ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
-
-        **اسم المواطن:** ${message1}
-
-        **السبب:** ${message2}
-
-        **تاريخ الفك:** ${message3}
-
-        ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
-
-        **ملاحظة: في حال نظرت بأن الباند تم عن طريق الخطأ يرجى فتح تكت المساعدة**
-      `)
-      .setFooter({
-        text: message.author.username,
-        iconURL: message.author.displayAvatarURL(),
-      })
-      .setColor('#ff0000'); // يمكنك تغيير لون الـ Embed حسب تفضيلاتك
-    
-
-
-
-
-    // Sending the message to the log channel
-    const logChannel = await client.channels.fetch(logChannelId);
-    logChannel.send({ embeds: [formattedMessage] });
-  }
-});;
-
-
-
-
-
-
-
-
-
-
 const trackedRoleID = '957442638980730934';
 const trackedChannelID = '957442641459576871';
 const notificationChannelID = '1189610179143147641';
