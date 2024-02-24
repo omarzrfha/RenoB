@@ -69,7 +69,7 @@ client.on("ready" , () => {
 });
 
 
-
+const ticketManagerRoleId = '957442639018491925';
 const categoryIDs = ['995631147532955708', '995632149464100944', '995631831925923961'];
 const reallow = '957442639018491925';
 
